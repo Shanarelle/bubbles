@@ -60,23 +60,34 @@ Octopus.prototype.update = function() {
 Octopus.prototype.draw = function() {
 	// console.log(this.velocity);
 
+	var speed = this.velocity.mag();
+
+	push();
 	fill('#3232ba');
 
-	ellipse(this.position.x, this.position.y, (this.velocity.mag() * 8) + 20, 50);
-	// image(this.me, this.position.x, this.position.y, 52, 67);
+	translate(this.position.x, this.position.y);
+	rotate(this.velocity.heading())
+	ellipse(0, 0, (speed * 5) + 65, 50);
+	fill('black');
+	ellipse(speed + 12, -6, 12, 8);
+	ellipse(speed + 12, 6, 12, 8);
+
+	pop();
 }
 
 function readInput() {
-	//TODO: adjust to allow diagonal swimming
 	var right = 0;
 	var down = 0;
 	if (keyIsDown(RIGHT_ARROW)) {
 		right = 2;
-	} else if (keyIsDown(LEFT_ARROW)) {
+	}
+	if (keyIsDown(LEFT_ARROW)) {
 		right = -2;
-	} else if (keyIsDown(DOWN_ARROW)) {
+	}
+	if (keyIsDown(DOWN_ARROW)) {
 		down = 2;
-	} else if (keyIsDown(UP_ARROW)) {
+	}
+	if (keyIsDown(UP_ARROW)) {
 		down = -2;
 	}
 	return createVector(right, down);
