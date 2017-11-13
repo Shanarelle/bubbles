@@ -1,25 +1,24 @@
 README
 
-This is to keep track of the state of the penguin herding game
+This is to keep track of the state of the proc-gen bubbles game
 
 
 
 Current State
 -------------
-- have some chicks and sitter on screen
-- chicks wander about the screen - properly bounded by canvas
-- chicks and sitter have portraits
+- have our fella
+	- squishes as he moves
+	- good colour
+	- has eyes
+- can pause the game using p
 
 
 
 Next Steps
 ----------
-- get chicks to react to proximity of the sitter
-- allow sitter to move diagonally
-- put in a pen
-- add check for penned to chick so once its inside the pen it stays within its confines
+- have bubbles that drift away and pop
+- get fella to generate bubbles as he moves
+- make bubbles disperse instead of all going the same way
+- make bubbles react to presence of fella
 
 - create and add music
-- add animation to sitter so it flaps it arms when near a chick?
-- create pen tiles so not just a line
-- create background image? 

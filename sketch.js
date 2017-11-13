@@ -5,11 +5,7 @@ var bubbles;
 var canvas_width = 900;
 var canvas_height = 580;
 var paused = false;
-
-// pre-fetch all required resources
-// function preload() { 
-//   player_image = loadImage('assets/');
-// }
+var bubbles = [];
 
 
 function setup() {
@@ -17,15 +13,24 @@ function setup() {
 	myCanvas.parent('canvasContainer');
 
 	player = new Octopus(canvas_width/2, canvas_height/2);
+	bubbles.push(new Bubble(createVector(100,100), createVector(1,1)));
 }
 
 function draw() {
 	background('#07357f');
 
-	player.update();
+	bubbles.forEach(function(bubble, index, object) { 
+		var kill = bubble.update() 
+		if (kill) {
+			object.splice(index, 1);
+		}
+	});
 
-	// chicks.forEach(function(chick) { chick.update() });
+	player.update();
 }
+
+
+//////////////// GAME CONTROLS ///////////////////////
 
 function keyTyped() {
   if (key === 'p') {
@@ -37,6 +42,57 @@ function keyTyped() {
 }
 
 
+////////////////////// BUBBLE ///////////////////////////
+
+function Bubble(position, startingVelocity) {
+	this.position = position;
+	this.velocity = startingVelocity;
+	this.lifespan = random(1, 200);
+	this.growthRate = 1.2;
+	this.time = 0;
+}
+
+Bubble.prototype.update = function() {
+	this.position = this.position.add(this.velocity);
+	this.velocity = this.velocity.mult(0.8);
+
+	if (this.time < this.lifespan) {
+		this.draw();
+		this.time++;
+	} else {
+		this.pop();
+		if (this.time > this.lifespan+5) {
+			return true;
+		}
+	}
+	return false;
+}
+
+//TODO: figure out whats wrong here. seems tied to current position of the fella
+Bubble.prototype.draw = function() {
+	push();
+	fill('#A0DFF6');
+
+	// translate(this.position.x, this.position.y);
+	ellipse(this.position.x, this.position.y, (this.time*this.growthRate)+2, (this.time*this.growthRate)+2);
+
+	pop();
+}
+
+Bubble.prototype.pop = function() {
+	push();
+	noFill();
+	stroke('#596E76');
+
+	// translate(this.position.x, this.position.y);
+	ellipse(this.position.x, this.position.y, (this.time*this.growthRate)+2, (this.time*this.growthRate)+2);
+
+	pop();
+}
+
+
+////////////////// FELLA /////////////////////////////
+
 function Octopus(x, y) {
 	this.position = createVector(x, y);
 	this.velocity = createVector(0, 0);
@@ -46,6 +102,8 @@ Octopus.prototype.update = function() {
 	var changeforce = readInput();
 
 	if (changeforce.mag() > 0) {
+		bubbles.push(new Bubble(this.position, this.velocity));
+
 		this.velocity = this.velocity.add(changeforce);
 		this.velocity = this.velocity.limit(10);
 	}
