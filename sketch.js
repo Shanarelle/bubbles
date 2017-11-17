@@ -46,7 +46,7 @@ function keyTyped() {
 
 function Bubble(position, startingVelocity) {
 	this.position = position;
-	this.velocity = startingVelocity;
+	this.velocity = createVector(1,1);
 	this.lifespan = random(1, 200);
 	this.growthRate = 1.2;
 	this.time = 0;
@@ -102,7 +102,7 @@ Octopus.prototype.update = function() {
 	var changeforce = readInput();
 
 	if (changeforce.mag() > 0) {
-		bubbles.push(new Bubble(this.position, this.velocity));
+		bubbles.push(new Bubble(createVector(random(900),random(500)), createVector(random(5),random(5))));//this.position.copy(), this.velocity.copy()));
 
 		this.velocity = this.velocity.add(changeforce);
 		this.velocity = this.velocity.limit(10);
@@ -124,12 +124,14 @@ Octopus.prototype.draw = function() {
 	fill('#3232ba');
 
 	translate(this.position.x, this.position.y);
-	rotate(this.velocity.heading())
+	rotate(this.velocity.heading());
 	ellipse(0, 0, (speed * 5) + 65, 50);
 	fill('black');
 	ellipse(speed + 12, -6, 12, 8);
 	ellipse(speed + 12, 6, 12, 8);
 
+	rotate(-this.velocity.heading());
+	translate(-this.position.x, -this.position.y);
 	pop();
 }
 
