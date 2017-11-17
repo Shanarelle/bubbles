@@ -46,24 +46,25 @@ function keyTyped() {
 
 function Bubble(position, startingVelocity) {
 	this.position = position;
-	this.velocity = createVector(1,1);
-	this.lifespan = random(1, 200);
+	this.velocity = startingVelocity;
+	this.lifespan = random(1, 100);
 	this.growthRate = 1.2;
 	this.time = 0;
 }
 
 Bubble.prototype.update = function() {
 	this.position = this.position.add(this.velocity);
-	this.velocity = this.velocity.mult(0.8);
+	// this.velocity = this.velocity.mult(0.9);
 
 	if (this.time < this.lifespan) {
 		this.draw();
 		this.time++;
 	} else {
 		this.pop();
-		if (this.time > this.lifespan+5) {
+		// if (this.time > this.lifespan+5) {
+		// 	this.time++;
 			return true;
-		}
+		// }
 	}
 	return false;
 }
@@ -102,7 +103,7 @@ Octopus.prototype.update = function() {
 	var changeforce = readInput();
 
 	if (changeforce.mag() > 0) {
-		bubbles.push(new Bubble(createVector(random(900),random(500)), createVector(random(5),random(5))));//this.position.copy(), this.velocity.copy()));
+		possiblyCreateBubble(this.position.copy(), this.velocity.copy());
 
 		this.velocity = this.velocity.add(changeforce);
 		this.velocity = this.velocity.limit(10);
@@ -151,6 +152,16 @@ function readInput() {
 		down = -2;
 	}
 	return createVector(right, down);
+}
+
+function possiblyCreateBubble(pos, vel) {
+	if (random(10) < 8) {
+		pos.add(createVector(random(-10,10), random(-10,10)));
+		vel.rotate(PI);
+		vel.mult(0.5);
+		pos.add(createVector(random(-10,10), random(-10,10)));
+		bubbles.push(new Bubble(pos, vel));
+	}
 }
 
 // function Chick() {
