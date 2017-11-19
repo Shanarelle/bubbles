@@ -47,8 +47,8 @@ function keyTyped() {
 function Bubble(position, startingVelocity) {
 	this.position = position;
 	this.velocity = startingVelocity;
-	this.lifespan = random(1, 100);
-	this.growthRate = 1.2;
+	this.lifespan = random(1, 25) + random(1, 25) + random(-10, 50);
+	this.growthRate = random(0.5, 1.2);
 	this.time = 0;
 }
 
@@ -97,16 +97,27 @@ Bubble.prototype.pop = function() {
 function Octopus(x, y) {
 	this.position = createVector(x, y);
 	this.velocity = createVector(0, 0);
+	this.jetted = false;
+	this.jettingMagnitude = 0;
 }
 
 Octopus.prototype.update = function() {
 	var changeforce = readInput();
+
+	this.jettingMagnitude = max(this.jettingMagnitude - 1, 0);
 
 	if (changeforce.mag() > 0) {
 		possiblyCreateBubble(this.position.copy(), this.velocity.copy());
 
 		this.velocity = this.velocity.add(changeforce);
 		this.velocity = this.velocity.limit(10);
+
+		if (!this.jetted) {
+			this.jettingMagnitude = 20;
+			this.jetted = true;
+		}
+	} else {
+		this.jetted = false;
 	}
 
 	this.position = this.position.add(this.velocity);
@@ -119,14 +130,14 @@ Octopus.prototype.update = function() {
 Octopus.prototype.draw = function() {
 	// console.log(this.velocity);
 
-	var speed = this.velocity.mag();
+	var speed = constrain((this.velocity.mag() - this.jettingMagnitude/4), 0, 20);
 
 	push();
 	fill('#3232ba');
 
 	translate(this.position.x, this.position.y);
 	rotate(this.velocity.heading());
-	ellipse(0, 0, (speed * 5) + 65, 50);
+	ellipse(0, 0, speed*5 + 65, this.jettingMagnitude + 50);
 	fill('black');
 	ellipse(speed + 12, -6, 12, 8);
 	ellipse(speed + 12, 6, 12, 8);
